@@ -24,21 +24,28 @@ while cap.isOpened():
     h, w, _ = image.shape
 
     if results.multi_hand_landmarks:
-        for hand_landmarks in results.multi_hand_landmarks:
-            # Get landmark for index finger tip (id=8)
-            y = hand_landmarks.landmark[8].y * h
+        # Process the first hand detected to avoid erratic switching between hands
+        hand_landmarks = results.multi_hand_landmarks[0]
+        
+        # Get landmark for index finger tip (id=8)
+        y = hand_landmarks.landmark[8].y * h
 
-            if prev_y is not None:
-                diff = y - prev_y
-
-                if diff > 20:
-                    pyautogui.scroll(-50)  # Scroll down
-                elif diff < -20:
-                    pyautogui.scroll(50)   # Scroll up
-
+        if prev_y is None:
             prev_y = y
+        else:
+            diff = y - prev_y
 
-            mp_draw.draw_landmarks(image, hand_landmarks, mp_hands.HAND_CONNECTIONS)
+            # Update prev_y only when we actually scroll, to accumulate slower movements
+            if diff > 30:
+                pyautogui.scroll(-300)  # Scroll down
+                prev_y = y
+            elif diff < -30:
+                pyautogui.scroll(300)   # Scroll up
+                prev_y = y
+
+        # Draw landmarks for all detected hands
+        for hlms in results.multi_hand_landmarks:
+            mp_draw.draw_landmarks(image, hlms, mp_hands.HAND_CONNECTIONS)
 
     else:
         prev_y = None  # Reset if hand is not detected
