@@ -2,6 +2,10 @@
 
 This project uses your webcam to track your hand gestures and scroll your screen up or down entirely hands-free.
 
+## Features
+- **Hands-Free Scrolling**: Scroll documents and webpages simply by moving your index finger up and down.
+- **Real-Time UI Overlay**: An interactive on-screen display shows you instructions and the current scrolling status.
+
 ## Technologies Used
 - **Python**
 - **OpenCV**: Handles webcam feed
